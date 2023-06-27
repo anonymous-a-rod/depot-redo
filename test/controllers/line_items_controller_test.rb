@@ -26,6 +26,15 @@ class LineItemsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'li', 'Programming Ruby 1.9'
   end
 
+  test "shoulkd create line item via turbo-stream" do
+    assert_difference('LineItem.count') do
+      post line_items_url, params: { product_id: products(:ruby).id }, as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_match /<tr class="line-item-highlight">/, @response.body
+  end
+
   test "should show line_item" do
     get line_item_url(@line_item)
     assert_response :success
